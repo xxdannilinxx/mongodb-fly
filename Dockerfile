@@ -7,12 +7,15 @@ RUN wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key 
 RUN echo "deb http://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 RUN sudo apt-get update
 RUN sudo apt-get install -y mongodb-org
+
+ENV TZ="America/Sao_Paulo"
+
 # Comment after create user and password
-RUN sed -i "s,\\(^[[:blank:]]*bindIp:\\) .*,\\1 0.0.0.0," /etc/mongod.conf
+# RUN sed -i "s,\\(^[[:blank:]]*bindIp:\\) .*,\\1 0.0.0.0," /etc/mongod.conf
 
 # Uncomment after create admin and password
-# RUN rm -rf /etc/mongod.conf
-# COPY mongod.conf /etc/mongod.conf
+RUN rm -rf /etc/mongod.conf
+COPY mongod.conf /etc/mongod.conf
 
 RUN echo "mongodb-org hold" | sudo dpkg --set-selections
 RUN echo "mongodb-org-database hold" | sudo dpkg --set-selections

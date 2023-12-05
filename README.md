@@ -4,40 +4,46 @@
 
 Allow Ip4 and allow IP6
 
+Create app
+
+```
+fly launch
+```
+
 Create Volume Storage :
 
 ```
-fly volumes create productiondb_storage --size 1 --region sin
+fly volumes create gamazap_database_storage --size 4 --region "gru"
 ```
 
 Activate IP6
 
 ```
-fly ips allocate-v6 --private --app applikasinya
+fly ips allocate-v6 --private --app gamazap-db
 ```
 
 IP4
 
 ```
-fly ips allocate-v4 --app applikasinya
+fly ips allocate-v4 --app gamazap-db
 ```
 
 ### Login in to SSH For Secure Mongodb Access
 
 ```
-fly ssh console --app applikasinya
+flyctl ssh console --app gamazap-db
 ```
 
 Create User and Password in `admin` db
 
-Change `userlogin` and `changemepassword`
+Change `gamazap` and `changemepassword`
 
 ```
 mongosh
 
 test > use admin
 
-admin > db.createUser({ user: "userlogin", pwd: "changemepassword", roles: [{ role: "userAdminAnyDatabase", db: "admin"}, "readWriteAnyDatabase" ]})
+admin > db.createUser({ user: "gamazap", pwd: "changemepassword", roles: [{ role: "userAdminAnyDatabase", db: "admin"}, "readWriteAnyDatabase" ]})
 
 ```
 
@@ -59,8 +65,15 @@ Deploy Again to Fly.io
 fly deploy --config=fly.toml --no-cache
 ```
 
+Change memory size:
+
+```
+fly scale vm shared-cpu-2x
+fly machine update 3287469ec35d58 --memory 1024
+```
+
 ### Example Login using mongodb Compass :
 
 ```
-mongodb://userlogin:changemepassword@applikasinya.fly.dev:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1
+mongodb://gamazap:changemepassword@gamazap-db.fly.dev:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1
 ```
